@@ -1,34 +1,135 @@
-/*
-getZodiacSign() {
-    let birthdate = new Date(this.birthdate);
-    let day = birthdate.getDate();
-    let month = birthdate.getMonth() + 1;
-    console.log("Passou pelo getSigno() da class User");
+class User {
+    constructor(name, email, birthdate, address, phone, cpf) {
+        this.name = name;
+        this.email = email;
+        this.birthdate = birthdate;
+        this.address = address;
+        this.phone = phone;
+        this.cpf = cpf;
+        this.age = this.calculateAge();
+        this.zodiacsign = this.getZodiacSign();
+        this.client = this.isPossibleClient();
+    }
 
-    if ((month == 1 && day <= 20) || (month == 12 && day >= 22)) {
-        return "Capricórnio ♑";
-    } else if ((month == 1 && day >= 21) || (month == 2 && day <= 18)) {
-        return "Aquário ♒";
-    } else if ((month == 2 && day >= 19) || (month == 3 && day <= 20)) {
-        return "Peixes ♓";
-    } else if ((month == 3 && day >= 21) || (month == 4 && day <= 20)) {
-        return "Áries ♈";
-    } else if ((month == 4 && day >= 21) || (month == 5 && day <= 20)) {
-        return "Touro ♉";
-    } else if ((month == 5 && day >= 21) || (month == 6 && day <= 20)) {
-        return "Gêmeos ♊";
-    } else if ((month == 6 && day >= 22) || (month == 7 && day <= 22)) {
-        return "Câncer ♋";
-    } else if ((month == 7 && day >= 23) || (month == 8 && day <= 23)) {
-        return "Leão ♌";
-    } else if ((month == 8 && day >= 24) || (month == 9 && day <= 23)) {
-        return "Virgem ♍";
-    } else if ((month == 9 && day >= 24) || (month == 10 && day <= 23)) {
-        return "Libra ♎";
-    } else if ((month == 10 && day >= 24) || (month == 11 && day <= 22)) {
-        return "Escorpião ♏";
-    } else if ((month == 11 && day >= 23) || (month == 12 && day <= 21)) {
-        return "Sagitário ♐";
+    calculateAge() {
+        const today = new Date();
+        const birthDate = new Date(this.birthdate);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    }
+
+    isPossibleClient() {
+        if (this.age <= 31 && this.age >= 18) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    getZodiacSign() {
+        let birthdate = new Date(this.birthdate);
+        let day = birthdate.getDate();
+        let month = birthdate.getMonth() + 1;
+        console.log("Passou pelo getSigno() da class User");
+
+        if ((month == 1 && day <= 20) || (month == 12 && day >= 22)) {
+            return "Capricórnio ♑";
+        } else if ((month == 1 && day >= 21) || (month == 2 && day <= 18)) {
+            return "Aquário ♒";
+        } else if ((month == 2 && day >= 19) || (month == 3 && day <= 20)) {
+            return "Peixes ♓";
+        } else if ((month == 3 && day >= 21) || (month == 4 && day <= 20)) {
+            return "Áries ♈";
+        } else if ((month == 4 && day >= 21) || (month == 5 && day <= 20)) {
+            return "Touro ♉";
+        } else if ((month == 5 && day >= 21) || (month == 6 && day <= 20)) {
+            return "Gêmeos ♊";
+        } else if ((month == 6 && day >= 22) || (month == 7 && day <= 22)) {
+            return "Câncer ♋";
+        } else if ((month == 7 && day >= 23) || (month == 8 && day <= 23)) {
+            return "Leão ♌";
+        } else if ((month == 8 && day >= 24) || (month == 9 && day <= 23)) {
+            return "Virgem ♍";
+        } else if ((month == 9 && day >= 24) || (month == 10 && day <= 23)) {
+            return "Libra ♎";
+        } else if ((month == 10 && day >= 24) || (month == 11 && day <= 22)) {
+            return "Escorpião ♏";
+        } else if ((month == 11 && day >= 23) || (month == 12 && day <= 21)) {
+            return "Sagitário ♐";
+        }
+    }
+}
+
+class ListUser {
+    constructor() {
+        this.users = [];
+    }
+
+    add(user) {
+        if (isAnyInputEmpty()) {
+            sendErrorMsg('Todos os campos obrigatórios devem ser preenchidos.');
+        }
+        else if (!valida_cpf(user.cpf)) {
+            sendErrorMsg('CPF inválido.');
+        }
+        else if (isUserAlreadyRegistered(user.cpf)) {
+            sendErrorMsg('CPF já cadastrado no sistema.');
+        } else {
+            this.users.push(user);
+            sendSuccessMsg('Sucesso')
+            clearInputs()
+        }
+    }
+
+    getAllUsers() {
+        return this.users;
+    }
+
+    countUsers() {
+        return this.users.length;
+    }
+}
+
+const listUser = new ListUser();
+
+function createUser() {
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const birthdate = document.getElementById("birthdate").value;
+    const address = document.getElementById("address").value;
+    const phone = document.getElementById("phone").value;
+    const cpf = document.getElementById("cpf").value;
+
+    const user = new User(name, email, birthdate, address, phone, cpf);
+
+    listUser.add(user);
+}
+
+function sendSuccessMsg(msg) {
+    document.getElementById("success-msg").innerHTML = msg
+    document.getElementById("success-msg").classList.remove("hidden");
+    setTimeout(function () {
+        document.getElementById("success-msg").classList.add("hidden");
+    }, 4000);
+}
+
+function isAnyInputEmpty() {
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const birthdate = document.getElementById("birthdate").value;
+    const address = document.getElementById("address").value;
+    const phone = document.getElementById("phone").value;
+    const cpf = document.getElementById("cpf").value;
+
+    if (name == '' || email == '' || birthdate == '' || address == '' || phone == '' || cpf == '') {
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -37,7 +138,6 @@ function showRegister() {
     document.getElementById("title-page").classList.remove("hidden");
     document.getElementById("main-div").classList.remove("hidden");
     console.log("Passou pela funcao showRegister()");
-
 }
 
 function formatedCPF(cpf) {
@@ -48,6 +148,19 @@ function formatedCPF(cpf) {
         + "." + cpfArray[3] + cpfArray[4] + cpfArray[5] + "."
         + cpfArray[6] + cpfArray[7] + cpfArray[8] + "-" + cpfArray[9] + cpfArray[10];
     return cpfFormated;
+}
+
+function isUserAlreadyRegistered(cpf) {
+    const cpfVerify = listUser.users.find((user) => {
+        if (user.cpf == cpf) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    );
+
+    console.log(cpfVerify)
 }
 
 function formatedCellphone(cellphone) {
@@ -106,9 +219,50 @@ function sendErrorMsg(msg) {
     }, 4000);
 }
 
-*/
+function clearInputs() {
+    document.getElementById("name").value = '';
+    document.getElementById("email").value = '';
+    document.getElementById("birthdate").value = '';
+    document.getElementById("address").value = '';
+    document.getElementById("phone").value = '';
+    document.getElementById("cpf").value = '';
+}
 
+function dateinPTBR(date) {
+    const partes = date.split('-');
+    const ano = partes[0];
+    const mes = partes[1];
+    const dia = partes[2];
+  
+    // Monta a data no formato brasileiro
+    const dataPTBR = `${dia}/${mes}/${ano}`;
+    return dataPTBR;
+}
+
+function showUsers() {
+    document.getElementById("sub-div").classList.remove("hidden");
+    document.getElementById("title-page").classList.add("hidden");
+    document.getElementById("main-div").classList.add("hidden");
+    console.log("Passou pela funcao showRegister()");
+    txt = ''
+    listUser.users.forEach((user) => {
+        txt += `
+       <div class="list-eachUser">
+            <p><strong>Nome: </strong>${user.name}</p>
+            <p><strong>Idade: </strong>${user.calculateAge()}</p>
+            <p><strong>Signo: </strong>${user.getZodiacSign()}</p>
+            <p><strong>E-mail: </strong>${user.email}</p>
+            <p><strong>Data de Nacimento: </strong>${dateinPTBR(user.birthdate)}</p>
+            <p><strong>Cidade: </strong>${user.address}</p>
+            <p><strong>Telefone: </strong>${formatedCellphone(user.phone)}</p>
+            <p><strong>CPF: </strong>${formatedCPF(user.cpf)}</p>
+            <p><strong>Possível Cliente: </strong>${user.isPossibleClient() ? "Sim" : "Não"}</p>
+        </div>
+       `
+    });
+
+    document.getElementById("user-list").innerHTML = txt;
+    document.getElementById("contador").innerHTML = `Contador: ${listUser.countUsers()}`
+}
 // how many functions are there? 12
 // how many classes are there? 2
-
-// Boa sorte!
